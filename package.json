@@ -22,13 +22,18 @@
     "typescript": "*"
   },
   "scripts": {
-    "test": "jest --passWithNoTests --watch",
-    "test:staged": "jest --passWithNoTests",
+    "test": "jest --passWithNoTests --silent --runInBand",
+    "test:verbose": "jest --passWithNoTests --runInBand",
+    "test:unit": "yarn test -- --watch -c jest-unit-config.js",
+    "test:integration": "yarn test -- --watch -c jest-integration-config.js",
+    "test:ci": "yarn test -- --coverage",
+    "test:staged": "yarn test -- --findRelatedTests",
     "prepare": "husky install"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn test:ci"
     }
   },
   "lint-staged": {
