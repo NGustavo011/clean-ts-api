@@ -9,7 +9,9 @@ export class AccountMongoRepository implements AddAccountRepository {
     const result = await accountCollection.insertOne(accountData)
     return {
       id: result.insertedId.toString(),
-      ...accountData
+      name: accountData.name,
+      email: accountData.email,
+      password: accountData.password
     }
   }
 }
