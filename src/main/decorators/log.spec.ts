@@ -1,0 +1,31 @@
+import { type Controller, type HttpRequest, type HttpResponse } from '../../presentation/protocols'
+import { LogControllerDecorator } from './log'
+
+describe('LogController', () => {
+  test('Deve chamar o handle do controller recebido', async () => {
+    class ControllerStub implements Controller {
+      async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
+        const httpResponse: HttpResponse = {
+          statusCode: 200,
+          body: {
+            name: 'any_name'
+          }
+        }
+        return await new Promise((resolve) => { resolve(httpResponse) })
+      }
+    }
+    const controllerStub = new ControllerStub()
+    const handleSpy = jest.spyOn(controllerStub, 'handle')
+    const sut = new LogControllerDecorator(controllerStub)
+    const httpRequest = {
+      body: {
+        email: 'any_mail@mail.com',
+        name: 'any_name',
+        password: 'any_pass',
+        passwordConfirmation: 'any_pass'
+      }
+    }
+    await sut.handle(httpRequest)
+    expect(handleSpy).toHaveBeenCalledWith(httpRequest)
+  })
+})
