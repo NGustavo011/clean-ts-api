@@ -13,4 +13,14 @@ describe('Login Controller', () => {
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(badRequest(new MissingParamError('email')))
   })
+  test('Deve retornar o status code 400 se a senha não for fornecida', async () => {
+    const sut = new LoginController()
+    const httpRequest = {
+      body: {
+        email: 'any_mail@mail.com'
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('password')))
+  })
 })
