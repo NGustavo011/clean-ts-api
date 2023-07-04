@@ -3,11 +3,13 @@ import { type LoadAccountByEmailRepository } from '../../protocols/db/load-accou
 import { DbAuthentication } from './db-authentication'
 import { type AuthenticationModel } from '../../../domain/usecases/authentication'
 import { type HashComparer } from '../../protocols/cryptography/hash-comparer'
+import { type TokenGenerator } from '../../protocols/cryptography/token-generator'
 
 interface SutTypes {
   sut: DbAuthentication
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
   hashComparerStub: HashComparer
+  tokenGeneratorStub: TokenGenerator
 }
 
 const makeFakeAccount = (): AccountModel => ({
@@ -40,14 +42,25 @@ const makeHashComparerStub = (): HashComparer => {
   return new HashComparerStub()
 }
 
+const makeTokenGeneratorStub = (): TokenGenerator => {
+  class TokenGeneratorStub implements TokenGenerator {
+    async generate (id: string): Promise<string> {
+      return await new Promise(resolve => { resolve('any_token') })
+    }
+  }
+  return new TokenGeneratorStub()
+}
+
 const makeFakeSut = (): SutTypes => {
   const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepository()
   const hashComparerStub = makeHashComparerStub()
-  const sut = new DbAuthentication(loadAccountByEmailRepositoryStub, hashComparerStub)
+  const tokenGeneratorStub = makeTokenGeneratorStub()
+  const sut = new DbAuthentication(loadAccountByEmailRepositoryStub, hashComparerStub, tokenGeneratorStub)
   return {
     sut,
     loadAccountByEmailRepositoryStub,
-    hashComparerStub
+    hashComparerStub,
+    tokenGeneratorStub
   }
 }
 
@@ -87,5 +100,11 @@ describe('DbAuthentication Usecase', () => {
     jest.spyOn(hashComparerStub, 'compare').mockReturnValueOnce(new Promise(resolve => { resolve(false) }))
     const accessToken = await sut.auth(makeFakeAuthentication())
     expect(accessToken).toBeNull()
+  })
+  test('Deve chamar TokenGenerator com um id correto', async () => {
+    const { sut, tokenGeneratorStub } = makeFakeSut()
+    const generateSpy = jest.spyOn(tokenGeneratorStub, 'generate')
+    await sut.auth(makeFakeAuthentication())
+    expect(generateSpy).toHaveBeenCalledWith('any_id')
   })
 })
