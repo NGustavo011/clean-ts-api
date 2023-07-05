@@ -40,5 +40,11 @@ describe('Login Routes', () => {
         password: '123'
       }).expect(200)
     })
+    test('Deve retornar status code 401 em caso de falha no Login', async () => {
+      await request(app).post('/api/login').send({
+        email: 'gustavo.nogueira@gmail.com',
+        password: '123'
+      }).expect(401)
+    })
   })
 })
