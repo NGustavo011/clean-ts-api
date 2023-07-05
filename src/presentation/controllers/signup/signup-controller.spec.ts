@@ -111,4 +111,12 @@ describe('SignUp Controller', () => {
       password: 'any_password'
     })
   })
+  test('Deve retornar 500 se a autenticação lançar uma exceção', async () => {
+    const { sut, authenticationStub } = makeSut()
+    jest.spyOn(authenticationStub, 'auth').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(serverError(new Error()))
+  })
 })
