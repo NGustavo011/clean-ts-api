@@ -1,7 +1,7 @@
 import { type Authentication, type AuthenticationModel, type HashComparer, type LoadAccountByEmailRepository, type Encrypter, type UpdateAccessTokenRepository } from './db-authentication-protocols'
 
 export class DbAuthentication implements Authentication {
-  constructor (readonly loadAccountByEmailRepository: LoadAccountByEmailRepository, readonly hashComparer: HashComparer, readonly encrypter: Encrypter, readonly updateAccessTokenRepository: UpdateAccessTokenRepository) {
+  constructor (private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository, private readonly hashComparer: HashComparer, private readonly encrypter: Encrypter, private readonly updateAccessTokenRepository: UpdateAccessTokenRepository) {
   }
 
   async auth (authenticationModel: AuthenticationModel): Promise<string | null> {
