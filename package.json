@@ -33,6 +33,7 @@
   },
   "scripts": {
     "dev": "sucrase-node src/main/server.ts",
+    "up": "yarn build && docker-compose up",
     "start": "node ./dist/main/server.js",
     "build": "rimraf dist && tsc",
     "test": "jest --passWithNoTests --silent --runInBand",
@@ -40,8 +41,7 @@
     "test:unit": "yarn test -- --watch -c jest-unit-config.ts",
     "test:integration": "yarn test -- --watch -c jest-integration-config.ts",
     "test:ci": "yarn test -- --coverage",
-    "test:staged": "yarn test -- --findRelatedTests",
-    "prepare": "husky install"
+    "test:staged": "yarn test -- --findRelatedTests"
   },
   "husky": {
     "hooks": {
@@ -57,6 +57,7 @@
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "mongodb": "^4.1.3",
