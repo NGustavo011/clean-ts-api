@@ -34,7 +34,7 @@
   "scripts": {
     "dev": "sucrase-node src/main/server.ts",
     "up": "yarn build && docker-compose up",
-    "start": "node ./dist/main/server.js",
+    "start": "nodemon -L --watch ./dist ./dist/main/server.js",
     "build": "rimraf dist && tsc",
     "test": "jest --passWithNoTests --silent --runInBand",
     "test:verbose": "jest --passWithNoTests --runInBand",
@@ -61,6 +61,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "mongodb": "^4.1.3",
+    "nodemon": "^2.0.22",
     "validator": "^13.9.0"
   },
   "engines": {
