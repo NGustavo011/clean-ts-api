@@ -70,16 +70,43 @@ describe('Account Mongo Repository', () => {
       expect(account?.email).toBe('any_mail@mail.com')
       expect(account?.password).toBe('any_password')
     })
-    test('Deve retornar uma conta em caso de sucesso no método de loadByToken com o role', async () => {
+    test('Deve retornar uma conta em caso de sucesso no método de loadByToken com a role admin', async () => {
       const sut = makeSut()
       await accountCollection.insertOne({
         name: 'any_name',
         email: 'any_mail@mail.com',
         password: 'any_password',
         accessToken: 'any_token',
-        role: 'any_role'
+        role: 'admin'
       })
-      const account = await sut.loadByToken('any_token', 'any_role')
+      const account = await sut.loadByToken('any_token', 'admin')
+      expect(account).toBeTruthy()
+      expect(account?.id).toBeTruthy()
+      expect(account?.name).toBe('any_name')
+      expect(account?.email).toBe('any_mail@mail.com')
+      expect(account?.password).toBe('any_password')
+    })
+    test('Deve retornar null em caso de uso de um usuário sem role tentar acessar uma ação de role necessária', async () => {
+      const sut = makeSut()
+      await accountCollection.insertOne({
+        name: 'any_name',
+        email: 'any_mail@mail.com',
+        password: 'any_password',
+        accessToken: 'any_token'
+      })
+      const account = await sut.loadByToken('any_token', 'admin')
+      expect(account).toBeFalsy()
+    })
+    test('Deve retornar uma conta em caso de sucesso no método de loadByToken, onde o usuário é um admin e ação não precisa de rola', async () => {
+      const sut = makeSut()
+      await accountCollection.insertOne({
+        name: 'any_name',
+        email: 'any_mail@mail.com',
+        password: 'any_password',
+        accessToken: 'any_token',
+        role: 'admin'
+      })
+      const account = await sut.loadByToken('any_token')
       expect(account).toBeTruthy()
       expect(account?.id).toBeTruthy()
       expect(account?.name).toBe('any_name')
