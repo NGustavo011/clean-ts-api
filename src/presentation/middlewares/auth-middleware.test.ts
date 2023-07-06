@@ -13,27 +13,38 @@ const makeFakeAccount = (): AccountModel => {
   }
 }
 
+interface SutTypes {
+  loadAccountByTokenStub: LoadAccountByToken
+  sut: AuthMiddleware
+}
+
+const makeLoadAccountByTokenStub = (): LoadAccountByToken => {
+  class LoadAccountByTokenStub implements LoadAccountByToken {
+    async load (accessToken: string, role?: string | undefined): Promise<AccountModel> {
+      return await new Promise(resolve => { resolve(makeFakeAccount()) })
+    }
+  }
+  return new LoadAccountByTokenStub()
+}
+
+const makeSut = (): SutTypes => {
+  const loadAccountByTokenStub = makeLoadAccountByTokenStub()
+  const sut = new AuthMiddleware(loadAccountByTokenStub)
+  return {
+    loadAccountByTokenStub,
+    sut
+  }
+}
+
 describe('Auth Middleware', () => {
   test('Deve retornar 403 se o x-access-token não exister no headers', async () => {
-    class LoadAccountByTokenStub implements LoadAccountByToken {
-      async load (accessToken: string, role?: string | undefined): Promise<AccountModel> {
-        return await new Promise(resolve => { resolve(makeFakeAccount()) })
-      }
-    }
-    const loadAccountByTokenStub = new LoadAccountByTokenStub()
-    const sut = new AuthMiddleware(loadAccountByTokenStub)
+    const { sut } = makeSut()
     const httpResponse = await sut.handle({})
     expect(httpResponse).toEqual(forbidden(new AccessDeniedError()))
   })
   test('Deve chamar o LoadAccountByToken with correct accessToken', async () => {
-    class LoadAccountByTokenStub implements LoadAccountByToken {
-      async load (accessToken: string, role?: string | undefined): Promise<AccountModel> {
-        return await new Promise(resolve => { resolve(makeFakeAccount()) })
-      }
-    }
-    const loadAccountByTokenStub = new LoadAccountByTokenStub()
+    const { sut, loadAccountByTokenStub } = makeSut()
     const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load')
-    const sut = new AuthMiddleware(loadAccountByTokenStub)
     await sut.handle({
       headers: {
         'x-access-token': 'any_token'
