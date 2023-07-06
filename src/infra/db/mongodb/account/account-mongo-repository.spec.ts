@@ -54,6 +54,28 @@ describe('Account Mongo Repository', () => {
       expect(account).toBeFalsy()
     })
   })
+  describe('loadByToken()', () => {
+    test('Deve retornar uma conta em caso de sucesso no método de loadByToken sem o role', async () => {
+      const sut = makeSut()
+      await accountCollection.insertOne({
+        name: 'any_name',
+        email: 'any_mail@mail.com',
+        password: 'any_password',
+        accessToken: 'any_token'
+      })
+      const account = await sut.loadByToken('any_token')
+      expect(account).toBeTruthy()
+      expect(account?.id).toBeTruthy()
+      expect(account?.name).toBe('any_name')
+      expect(account?.email).toBe('any_mail@mail.com')
+      expect(account?.password).toBe('any_password')
+    })
+    test('Deve retornar null em caso de falha no método de loadByToken', async () => {
+      const sut = makeSut()
+      const account = await sut.loadByToken('any_token')
+      expect(account).toBeFalsy()
+    })
+  })
   describe('updateAccessToken()', () => {
     test('Deve atualizar o accessToken da conta ao executar o método updateAccessToken com sucesso', async () => {
       const sut = makeSut()
