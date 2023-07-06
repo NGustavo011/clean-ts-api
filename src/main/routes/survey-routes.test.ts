@@ -17,7 +17,7 @@ describe('Survey Routes', () => {
     await surveyCollection.deleteMany({})
   })
   describe('POST /surveys', () => {
-    test('Deve retornar status code 204 em caso de sucesso em adicionar uma nova Survey', async () => {
+    test('Deve retornar status code 403 em caso de realizar a requisição sem passar o accessToken', async () => {
       await request(app).post('/api/surveys').send({
         question: 'Question',
         answers: [
@@ -28,7 +28,7 @@ describe('Survey Routes', () => {
             answer: 'Answer 2'
           }
         ]
-      }).expect(204)
+      }).expect(403)
     })
   })
 })
