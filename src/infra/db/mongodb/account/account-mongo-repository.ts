@@ -3,7 +3,7 @@ import { type AddAccountRepository } from '../../../../data/protocols/db/account
 import { type LoadAccountByEmailRepository } from '../../../../data/protocols/db/account/load-account-by-email-repository'
 import { type UpdateAccessTokenRepository } from '../../../../data/protocols/db/account/update-access-token-repository'
 import { type AccountModel } from '../../../../domain/models/account'
-import { type AddAccountModel } from '../../../../domain/usecases/add-account'
+import { type AddAccountModel } from '../../../../domain/usecases/account/add-account'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { type LoadAccountByTokenRepository } from '../../../../data/protocols/db/account/load-account-by-token-repository'
 
