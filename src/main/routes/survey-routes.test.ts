@@ -64,4 +64,9 @@ describe('Survey Routes', () => {
       }).expect(204)
     })
   })
+  describe('GET /surveys', () => {
+    test('Deve retornar status code 403 em caso de realizar a requisição sem passar o accessToken', async () => {
+      await request(app).get('/api/surveys').expect(403)
+    })
+  })
 })
