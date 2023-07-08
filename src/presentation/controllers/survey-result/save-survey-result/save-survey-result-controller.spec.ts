@@ -1,7 +1,7 @@
 import { SaveSurveyResultController } from './save-survey-result-controller'
 import { type LoadSurveyById, type HttpRequest, type SurveyModel } from './save-survey-result-controller-protocols'
 import { InvalidParamError } from '../../../errors'
-import { forbidden } from '../../../helpers/http/http-helper'
+import { forbidden, serverError } from '../../../helpers/http/http-helper'
 
 interface SutTypes {
   loadSurveyByIdStub: LoadSurveyById
@@ -58,5 +58,11 @@ describe('SaveSurveyResult Controller', () => {
     jest.spyOn(loadSurveyByIdStub, 'loadById').mockReturnValueOnce(new Promise(resolve => { resolve(null) }))
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(forbidden(new InvalidParamError('surveyId')))
+  })
+  test('Deve retornar status code 500 se LoadSurveyById lançar um erro', async () => {
+    const { sut, loadSurveyByIdStub } = makeSut()
+    jest.spyOn(loadSurveyByIdStub, 'loadById').mockReturnValueOnce(new Promise((resolve, reject) => { reject(new Error()) }))
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
