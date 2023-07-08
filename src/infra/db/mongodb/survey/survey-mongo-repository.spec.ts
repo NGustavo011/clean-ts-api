@@ -41,24 +41,35 @@ describe('Survey Mongo Repository', () => {
       expect(survey).toBeTruthy()
     })
   })
-  describe('add()', () => {
-    test('Deve realizar com sucesso o método de add', async () => {
+  describe('loadAll()', () => {
+    test('Deve realizar com sucesso o método de loadAll', async () => {
+      await surveyCollection.insertMany([
+        {
+          question: 'any_question',
+          answers: [
+            {
+              image: 'any_image',
+              answer: 'any_answer'
+            }
+          ],
+          date: new Date()
+        },
+        {
+          question: 'other_question',
+          answers: [
+            {
+              image: 'other_image',
+              answer: 'other_answer'
+            }
+          ],
+          date: new Date()
+        }
+      ])
       const sut = makeSut()
-      const fakeSurveyData: AddSurveyModel = {
-        question: 'any_question',
-        answers: [
-          {
-            image: 'any_image',
-            answer: 'any_answer'
-          }, {
-            answer: 'other_answer'
-          }
-        ],
-        date: new Date()
-      }
-      await sut.add(fakeSurveyData)
-      const survey = await surveyCollection.findOne({ question: 'any_question' })
-      expect(survey).toBeTruthy()
+      const surveys = await sut.loadAll()
+      expect(surveys.length).toBe(2)
+      expect(surveys[0].question).toBe('any_question')
+      expect(surveys[1].question).toBe('other_question')
     })
   })
 })
