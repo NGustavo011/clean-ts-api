@@ -121,4 +121,10 @@ describe('SaveSurveyResult Controller', () => {
       answer: 'any_answer'
     })
   })
+  test('Deve retornar status code 500 se SaveSurveyResult lançar um erro', async () => {
+    const { sut, saveSurveyResultStub } = makeSut()
+    jest.spyOn(saveSurveyResultStub, 'save').mockReturnValueOnce(new Promise((resolve, reject) => { reject(new Error()) }))
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(serverError(new Error()))
+  })
 })
