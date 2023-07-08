@@ -17,13 +17,6 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
       upsert: true,
       returnDocument: 'after'
     })
-    const surveyResultCreated = res.value as SurveyResultModel
-    return {
-      id: res.value?._id.toString() as string,
-      accountId: surveyResultCreated.accountId,
-      answer: surveyResultCreated.answer,
-      date: surveyResultCreated.date,
-      surveyId: surveyResultCreated.surveyId
-    }
+    return res.value && MongoHelper.mongoMap(res.value)
   }
 }
