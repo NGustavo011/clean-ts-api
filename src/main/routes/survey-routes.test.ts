@@ -68,5 +68,44 @@ describe('Survey Routes', () => {
     test('Deve retornar status code 403 em caso de realizar a requisição sem passar o accessToken', async () => {
       await request(app).get('/api/surveys').expect(403)
     })
+    test('Deve retornar status code 200 em caso de sucesso', async () => {
+      await surveyCollection.insertMany([
+        {
+          question: 'any_question',
+          answers: [
+            {
+              image: 'any_image',
+              answer: 'any_answer'
+            }
+          ],
+          date: new Date()
+        },
+        {
+          question: 'other_question',
+          answers: [
+            {
+              image: 'other_image',
+              answer: 'other_answer'
+            }
+          ],
+          date: new Date()
+        }
+      ])
+      const res = await accountCollection.insertOne({
+        name: 'Gustavo',
+        email: 'gu.nogueira@gmail.com',
+        password: '123'
+      })
+      const id = res.insertedId.toString()
+      const accessToken = sign({ id }, env.jwtSecret)
+      await accountCollection.updateOne({
+        _id: new ObjectId(id)
+      }, {
+        $set: {
+          accessToken
+        }
+      })
+      await request(app).get('/api/surveys').set('x-access-token', accessToken).expect(200)
+    })
   })
 })
