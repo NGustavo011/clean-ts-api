@@ -35,7 +35,7 @@
   },
   "scripts": {
     "dev": "sucrase-node src/main/server.ts",
-    "up": "yarn build && docker-compose up",
+    "up": "docker-compose down && yarn build && docker-compose up",
     "start": "nodemon -L --watch ./dist ./dist/main/server.js",
     "build": "rimraf dist && tsc",
     "test": "jest --passWithNoTests --silent --runInBand",
