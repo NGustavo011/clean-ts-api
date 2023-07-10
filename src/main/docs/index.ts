@@ -4,11 +4,13 @@ import { notFound } from './components/responses/not-found'
 import { serverError } from './components/responses/server-error'
 import { unauthorized } from './components/responses/unauthorized'
 import { loginPath } from './paths/login-path'
+import { signupPath } from './paths/signup-path'
 import { surveyPath } from './paths/survey-path'
 import { accountSchema } from './schemas/account-schema'
 import { apiKeyAuthSchema } from './schemas/api-key-auth-schema'
 import { errorSchema } from './schemas/error-schema'
 import { loginParamsSchema } from './schemas/login-params-schema'
+import { signUpParamsSchema } from './schemas/signup-params-schema'
 import { surveyAnswerSchema } from './schemas/survey-answer-schema'
 import { surveySchema } from './schemas/survey-schema'
 import { surveysSchema } from './schemas/surveys-schema'
@@ -37,6 +39,7 @@ export default {
   ],
   paths: {
     '/login': loginPath,
+    '/signup': signupPath,
     '/surveys': surveyPath
   },
   schemas: {
@@ -45,7 +48,8 @@ export default {
     error: errorSchema,
     survey: surveySchema,
     surveys: surveysSchema,
-    surveyAnswer: surveyAnswerSchema
+    surveyAnswer: surveyAnswerSchema,
+    signUpParams: signUpParamsSchema
   },
   components: {
     securitySchemes: {
