@@ -1,7 +1,8 @@
 import { EmailInUseError, MissingParamError, ServerError } from '../../../errors'
-import { type Authentication, type AccountModel, type AddAccount, type AddAccountParams, type HttpRequest, type Validation, type AuthenticationParams } from './signup-controller-protocols'
+import { type Authentication, type AddAccount, type HttpRequest, type Validation } from './signup-controller-protocols'
 import { SignUpController } from './signup-controller'
 import { badRequest, forbidden, ok, serverError } from '../../../helpers/http/http-helper'
+import { mockAddAccount, mockAuthentication, mockValidation } from '../../../test'
 
 interface SutTypes {
   sut: SignUpController
@@ -21,44 +22,10 @@ const makeFakeRequest = (): HttpRequest => {
   }
 }
 
-const makeFakeAccount = (): AccountModel => ({
-  id: 'valid_id',
-  name: 'valid_name',
-  email: 'valid_mail@mail.com',
-  password: 'valid_password'
-})
-
-const makeValidation = (): Validation => {
-  class ValidationStub implements Validation {
-    validate (input: any): Error | null {
-      return null
-    }
-  }
-  return new ValidationStub()
-}
-
-const makeAddAccount = (): AddAccount => {
-  class AddAccountStub implements AddAccount {
-    async add (account: AddAccountParams): Promise<AccountModel> {
-      return await new Promise(resolve => { resolve(makeFakeAccount()) })
-    }
-  }
-  return new AddAccountStub()
-}
-
-const makeAuthentication = (): Authentication => {
-  class AuthenticationStub implements Authentication {
-    async auth (authentication: AuthenticationParams): Promise<string> {
-      return await new Promise(resolve => { resolve('any_token') })
-    }
-  }
-  return new AuthenticationStub()
-}
-
 const makeSut = (): SutTypes => {
-  const addAccountStub = makeAddAccount()
-  const validationStub = makeValidation()
-  const authenticationStub = makeAuthentication()
+  const addAccountStub = mockAddAccount()
+  const validationStub = mockValidation()
+  const authenticationStub = mockAuthentication()
   const sut = new SignUpController(addAccountStub, validationStub, authenticationStub)
   return {
     sut, addAccountStub, validationStub, authenticationStub
