@@ -1,7 +1,7 @@
 import { type Collection } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { SurveyMongoRepository } from './survey-mongo-repository'
-import { type AddSurveyModel } from '../../../../domain/usecases/survey/add-survey'
+import { type AddSurveyParams } from '../../../../domain/usecases/survey/add-survey'
 
 let surveyCollection: Collection
 
@@ -24,7 +24,7 @@ describe('Survey Mongo Repository', () => {
   describe('add()', () => {
     test('Deve realizar com sucesso o método de add', async () => {
       const sut = makeSut()
-      const fakeSurveyData: AddSurveyModel = {
+      const fakeSurveyData: AddSurveyParams = {
         question: 'any_question',
         answers: [
           {
