@@ -1,6 +1,6 @@
 import { mockAuthentication, throwError } from '../../../../domain/test'
 import { DbAuthentication } from './db-authentication'
-import { type HashComparer, type LoadAccountByEmailRepository, type Encrypter, type UpdateAccessTokenRepository } from './db-authentication-protocols'
+import { type HashComparer, type LoadAccountByEmailRepository, type Encrypter, type UpdateAccessTokenRepository, type AuthenticationModel } from './db-authentication-protocols'
 import { mockHashComparer, mockEncrypter, mockLoadAccountByEmailRepository, mockUpdateAccessTokenRepository } from '../../../../data/test'
 
 interface SutTypes {
@@ -42,8 +42,8 @@ describe('DbAuthentication Usecase', () => {
   test('Deve retornar vázio se o LoadAccountByEmailRepository retornar vázio', async () => {
     const { sut, loadAccountByEmailRepositoryStub } = makeFakeSut()
     jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail').mockReturnValueOnce(new Promise(resolve => { resolve(null) }))
-    const accessToken = await sut.auth(mockAuthentication())
-    expect(accessToken).toBeNull()
+    const model = await sut.auth(mockAuthentication())
+    expect(model).toBeNull()
   })
   test('Deve chamar HashComparer com valores corretos', async () => {
     const { sut, hashComparerStub } = makeFakeSut()
@@ -60,8 +60,8 @@ describe('DbAuthentication Usecase', () => {
   test('Deve retornar vázio se o HashComparer retornar falso', async () => {
     const { sut, hashComparerStub } = makeFakeSut()
     jest.spyOn(hashComparerStub, 'compare').mockReturnValueOnce(new Promise(resolve => { resolve(false) }))
-    const accessToken = await sut.auth(mockAuthentication())
-    expect(accessToken).toBeNull()
+    const model = await sut.auth(mockAuthentication())
+    expect(model).toBeNull()
   })
   test('Deve chamar Encrypter com um id correto', async () => {
     const { sut, encrypterStub } = makeFakeSut()
@@ -75,10 +75,11 @@ describe('DbAuthentication Usecase', () => {
     const promise = sut.auth(mockAuthentication())
     await expect(promise).rejects.toThrow()
   })
-  test('Deve retornar o id corretamente como token se não tiver problemas', async () => {
+  test('Deve retornar um authenticationModel corretamente se não tiver problemas', async () => {
     const { sut } = makeFakeSut()
-    const accessToken = await sut.auth(mockAuthentication())
+    const { accessToken, name } = await sut.auth(mockAuthentication()) as AuthenticationModel
     expect(accessToken).toBe('any_token')
+    expect(name).toBe('any_name')
   })
   test('Deve chamar UpdateAccessTokenRepository com valores corretos', async () => {
     const { sut, updateAccessTokenRepositoryStub } = makeFakeSut()
