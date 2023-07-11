@@ -5,6 +5,7 @@ import { loginParamsSchema } from './login-params-schema'
 import { saveSurveyParamsSchema } from './save-survey-params-schema'
 import { signUpParamsSchema } from './signup-params-schema'
 import { surveyAnswerSchema } from './survey-answer-schema'
+import { surveyResultAnswerSchema } from './survey-result-answer-schema'
 import { surveyResultSchema } from './survey-result-schema'
 import { surveySchema } from './survey-schema'
 import { surveysSchema } from './surveys-schema'
@@ -19,5 +20,6 @@ export const swaggerSchemas = {
   signUpParams: signUpParamsSchema,
   addSurveyParams: addSurveyParamsSchema,
   saveSurveyParams: saveSurveyParamsSchema,
-  surveyResult: surveyResultSchema
+  surveyResult: surveyResultSchema,
+  surveyResultAnswer: surveyResultAnswerSchema
 }
