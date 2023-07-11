@@ -37,6 +37,12 @@ describe('LoadSurveys Controller', () => {
     const httpResponse = await sut.handle({})
     expect(httpResponse).toEqual(ok(mockSurveyModels()))
   })
+  test('Deve retornar 204 em caso de LoadSurveys retornar null', async () => {
+    const { sut, loadSurveysStub } = makeSut()
+    jest.spyOn(loadSurveysStub, 'load').mockReturnValueOnce(new Promise(resolve => { resolve(null) }))
+    const httpResponse = await sut.handle({})
+    expect(httpResponse).toEqual(noContent())
+  })
   test('Deve retornar 204 em caso de LoadSurveys retornar uma lista vazia', async () => {
     const { sut, loadSurveysStub } = makeSut()
     jest.spyOn(loadSurveysStub, 'load').mockReturnValueOnce(new Promise(resolve => { resolve([]) }))
