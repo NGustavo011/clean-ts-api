@@ -1,6 +1,8 @@
 import { LoadSurveyResultController } from './load-survey-result-controller'
 import { type LoadSurveyById, type HttpRequest } from './load-survey-result-controller-protocols'
 import { mockLoadSurveyById } from '../../../test/mock-survey'
+import { forbidden } from '../../../helpers/http/http-helper'
+import { InvalidParamError } from '../../../errors'
 
 interface SutTypes {
   sut: LoadSurveyResultController
@@ -28,5 +30,11 @@ describe('LoadSurveyResult Controller', () => {
     const loadByIdSpy = jest.spyOn(loadSurveyByIdStub, 'loadById')
     await sut.handle(makeFakeRequest())
     expect(loadByIdSpy).toHaveBeenCalledWith(makeFakeRequest().params.surveyId)
+  })
+  test('Deve retornar o status code 403 se o LoadSurveyById retornar nulo', async () => {
+    const { sut, loadSurveyByIdStub } = makeSut()
+    jest.spyOn(loadSurveyByIdStub, 'loadById').mockReturnValueOnce(Promise.resolve(null))
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(forbidden(new InvalidParamError('surveyId')))
   })
 })
