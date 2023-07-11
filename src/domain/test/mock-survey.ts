@@ -7,8 +7,11 @@ export const mockSurveyModel = (): SurveyModel => {
     question: 'any_question',
     answers: [
       {
-        image: 'any_image',
-        answer: 'any_answer'
+        answer: 'any_answer',
+        image: 'any_image'
+      },
+      {
+        answer: 'other_answer'
       }
     ],
     date: new Date()
@@ -18,7 +21,7 @@ export const mockSurveyModel = (): SurveyModel => {
 export const mockSurveyModels = (): SurveyModel[] => {
   return [
     {
-      id: 'any_id',
+      id: 'any_survey_id',
       question: 'any_question',
       answers: [
         {
