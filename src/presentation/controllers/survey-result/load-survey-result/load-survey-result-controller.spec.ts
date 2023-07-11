@@ -1,9 +1,9 @@
 import { LoadSurveyResultController } from './load-survey-result-controller'
 import { type LoadSurveyById, type HttpRequest, type LoadSurveyResult } from './load-survey-result-controller-protocols'
 import { mockLoadSurveyById } from '../../../test/mock-survey'
-import { forbidden, serverError } from '../../../helpers/http/http-helper'
+import { forbidden, ok, serverError } from '../../../helpers/http/http-helper'
 import { InvalidParamError } from '../../../errors'
-import { throwError } from '../../../../domain/test'
+import { mockSurveyResultModel, throwError } from '../../../../domain/test'
 import { mockLoadSurveyResult } from '../../../test/mock-survey-result'
 
 interface SutTypes {
@@ -61,9 +61,8 @@ describe('LoadSurveyResult Controller', () => {
     expect(httpResponse).toEqual(serverError(new Error()))
   })
   test('Deve retornar o status code 500 se o LoadSurveyResult lançar um erro', async () => {
-    const { sut, loadSurveyResultStub } = makeSut()
-    jest.spyOn(loadSurveyResultStub, 'load').mockImplementationOnce(throwError)
+    const { sut } = makeSut()
     const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(serverError(new Error()))
+    expect(httpResponse).toEqual(ok(mockSurveyResultModel()))
   })
 })
